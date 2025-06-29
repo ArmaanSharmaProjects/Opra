@@ -1,122 +1,344 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'splash_screen.dart'; // your animated splash implementation
 
-void main() {
-  runApp(const MyApp());
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: 'https://pkjnudgaohbgwptsbhne.supabase.co', // Replace with your Supabase URL
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBram51ZGdhb2hiZ3dwdHNiaG5lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MzU2MzgsImV4cCI6MjA2NjExMTYzOH0.UwO6DnRGnmPmuIK-ZR400YRo2fm6OE5j0vqS5M6NMiU', // Replace with your Supabase anon key
+  );
+  
+  runApp(const OpraApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class OpraApp extends StatelessWidget {
+  const OpraApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Opra',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6F7CFF)),
+        useMaterial3: true,
+        fontFamily: 'SF Pro',
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: SplashScreen.route,
+      routes: {
+        SplashScreen.route: (_) => const SplashScreen(),
+        RoleSelectPage.route: (_) => const RoleSelectPage(),
+        PersonalInfoPage.route: (_) => const PersonalInfoPage(),
+        AddressPage.route: (_) => const AddressPage(),
+        HomePage.route: (_) => const HomePage(),
+        JobFeedPage.route: (_) => const JobFeedPage(),
+        PostJobPage.route: (_) => const PostJobPage(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+class OnboardingData {
+  String? role;         
+  String? firstName;
+  String? lastName;
+  String? phone;
+  String? street;
+  String? city;
+  String? state;
+  String? zip;
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Map<String, dynamic> toJson(String uid, String email) => {
+        'id': uid,
+        'email': email,
+        'role': role,
+        'first_name': firstName,
+        'last_name': lastName,
+        'phone': phone,
+        'street': street,
+        'city': city,
+        'state': state,
+        'zip': zip,
+      };
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+//////////////////////////////////////////////////////////////
+//  Page 1 – choose role                                   //
+//////////////////////////////////////////////////////////////
+class RoleSelectPage extends StatelessWidget {
+  const RoleSelectPage({super.key});
+  static const route = '/role';
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    final data = OnboardingData();
+
+    Widget card(String title, String subtitle, IconData icon, String value) {
+      return Card(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: value == 'provider'
+                ? const Color(0xFF9C68FD)
+                : const Color(0xFF4F7CFF),
+            child: Icon(icon, color: Colors.white),
+          ),
+          title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          subtitle: Text(subtitle),
+          onTap: () {
+            data.role = value;
+            Navigator.pushNamed(context, PersonalInfoPage.route,
+                arguments: data);
+          },
         ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          const SizedBox(height: 32),
+          const Icon(Icons.apartment, size: 72, color: Color(0xFF6F7CFF)),
+          const SizedBox(height: 16),
+          const Text('Welcome to Opra',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+            child: Text(
+              'Professional services marketplace connecting skilled workers with discerning clients',
+              textAlign: TextAlign.center,
+            ),
+          ),
+          card('Service Provider', 'Offer professional services to clients',
+              Icons.work, 'provider'),
+          card('Client', 'Find and hire professional services', Icons.person,
+              'client'),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+class PersonalInfoPage extends StatefulWidget {
+  const PersonalInfoPage({super.key});
+  static const route = '/personal';
+
+  @override
+  State<PersonalInfoPage> createState() => _PersonalInfoPageState();
+}
+
+class _PersonalInfoPageState extends State<PersonalInfoPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _first = TextEditingController();
+  final _last = TextEditingController();
+  final _phone = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final data = ModalRoute.of(context)!.settings.arguments as OnboardingData;
+
+    return Scaffold(
+      appBar: AppBar(leading: BackButton(onPressed: () => Navigator.pop(context))),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 8),
+              const Text('Personal Information',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _first,
+                decoration: const InputDecoration(labelText: 'First Name *'),
+                validator: (v) => v!.isEmpty ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: _last,
+                decoration: const InputDecoration(labelText: 'Last Name *'),
+                validator: (v) => v!.isEmpty ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: _phone,
+                decoration: const InputDecoration(labelText: 'Phone Number *'),
+                validator: (v) => v!.isEmpty ? 'Required' : null,
+              ),
+              const Spacer(),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    data.firstName = _first.text.trim();
+                    data.lastName = _last.text.trim();
+                    data.phone = _phone.text.trim();
+                    Navigator.pushNamed(context, AddressPage.route,
+                        arguments: data);
+                  }
+                },
+                child: const Text('Continue  →'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class AddressPage extends StatefulWidget {
+  const AddressPage({super.key});
+  static const route = '/address';
+
+  @override
+  State<AddressPage> createState() => _AddressPageState();
+}
+
+class _AddressPageState extends State<AddressPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _street = TextEditingController();
+  final _city = TextEditingController();
+  final _state = TextEditingController();
+  final _zip = TextEditingController();
+
+  bool _loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final data = ModalRoute.of(context)!.settings.arguments as OnboardingData;
+    return Scaffold(
+      appBar: AppBar(leading: BackButton(onPressed: () => Navigator.pop(context))),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 8),
+              const Text('Service Location',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _street,
+                decoration: const InputDecoration(labelText: 'Street Address *'),
+                validator: (v) => v!.isEmpty ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: _city,
+                decoration: const InputDecoration(labelText: 'City *'),
+                validator: (v) => v!.isEmpty ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: _state,
+                decoration: const InputDecoration(labelText: 'State *'),
+                validator: (v) => v!.isEmpty ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: _zip,
+                decoration: const InputDecoration(labelText: 'ZIP Code *'),
+                validator: (v) => v!.isEmpty ? 'Required' : null,
+              ),
+              const Spacer(),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48)),
+                onPressed: _loading
+                    ? null
+                    : () async {
+                        if (!_formKey.currentState!.validate()) return;
+                        setState(() => _loading = true);
+
+                        final client = Supabase.instance.client;
+                        final user = client.auth.currentUser;
+                        if (user == null) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Not logged in')));
+                          }
+                          return;
+                        }
+                        data
+                          ..street = _street.text.trim()
+                          ..city = _city.text.trim()
+                          ..state = _state.text.trim()
+                          ..zip = _zip.text.trim();
+
+                        final res = await client
+                            .from('user_profiles')
+                            .upsert(data.toJson(user.id, user.email!));
+
+                        if (res.error != null) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(res.error!.message)));
+                          }
+                        } else {
+                          if (context.mounted) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, HomePage.route, (_) => false);
+                          }
+                        }
+                        if (mounted) setState(() => _loading = false);
+                      },
+                child: _loading
+                    ? const CircularProgressIndicator()
+                    : const Text('Finish  →'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class JobFeedPage extends StatelessWidget {
+  const JobFeedPage({super.key});
+  static const route = '/jobs';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Job Feed')),
+      body: const Center(child: Text('Jobs available for service providers')),
+    );
+  }
+}
+
+class PostJobPage extends StatelessWidget {
+  const PostJobPage({super.key});
+  static const route = '/post';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Post a Job')),
+      body: const Center(child: Text('Post a job for service providers to view')),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+  static const route = '/home';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Opra')),
+      body: const Center(child: Text('Welcome to Opra 🎉')),
+    );
+  }
+}
+
